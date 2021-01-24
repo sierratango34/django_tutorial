@@ -159,8 +159,18 @@ class QuestionDetailViewTests(TestCase):
         response = self.client.get(url)
         self.assertContains(response, past_question.question_text)
 
+    def test_past_question_with_choice(self):
+        """The detail view of a question with a pub_date in the past
+        displays the question's choice.
+        """
+        past_question = create_question(question_text="Q1", days=-5)
+        choice = create_choice(past_question, choice_text="choice 1")
+        url = reverse('polls:detail', args=(past_question.id,))
+        response = self.client.get(url)
+        self.assertContains(response, choice.choice_text)
 
-class ResultsViewTests(TestCase):
+
+class QuestionResultsViewTests(TestCase):
     def test_choice_created_shows_in_results(self):
         """
         The results view of a question shows the choice
